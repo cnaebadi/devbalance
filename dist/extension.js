@@ -8,12 +8,11 @@ const player = require('play-sound')();
 const path = require("path");
 const fs = require("fs");
 let active = false;
-let lastTypingTime = Date.now();
 let intervalTimer;
-let workDuration = 30 * 60 * 1000; // 30 mins default
+let workDuration = 25 * 60 * 1000; // 25 mins default
 let breakDuration = 5 * 60 * 1000; // 5 mins default
+let lastTypingTime = Date.now();
 let paused = false;
-let pausedSeconds = 0;
 let workSeconds = 0;
 let breakSeconds = 0;
 let historyFilePath;
@@ -78,37 +77,6 @@ function activate(context) {
     updateStatusBar(0, true);
 }
 exports.activate = activate;
-// function startTimer() {
-//   if (timerState === 'working') return;
-//   clearInterval(intervalTimer);
-//   timerState = 'working';
-//   active = true;
-//   workSeconds = 0;
-//   paused = false;
-//   intervalTimer = setInterval(() => {
-//     if (!paused) {
-//       workSeconds += 1;
-//       updateStatusBar(workSeconds, true);
-//       if (workSeconds * 1000 >= workDuration) {
-//         clearInterval(intervalTimer);
-//         if (timerState === 'working') {
-//           timerState = 'idle';
-//           const hour = new Date().getHours();
-//           const hourly = Array(24).fill(0);
-//           hourly[hour] = workSeconds;
-//           updateDailyLog(globalContext, {
-//             codingSeconds: workSeconds,
-//             hourlySeconds: hourly
-//           });
-//           playSound();
-//           vscode.window.showInformationMessage("🪫 Time to take a short break!");
-//           active = false;
-//           startBreakTimer();
-//         }
-//       }
-//     }
-//   }, 1000);
-// }
 function startTimer() {
     if (timerState === 'working')
         return;
@@ -145,37 +113,6 @@ function startTimer() {
         }
     }, 1000);
 }
-// function startBreakTimer() {
-//   if (timerState === 'break') return; // جلوگیری از اجرای چندباره
-//   clearInterval(intervalTimer);
-//   timerState = 'break';
-//   active = true;
-//   breakSeconds = 0;
-//   paused = false;
-//   intervalTimer = setInterval(() => {
-//     if (!paused) {
-//       breakSeconds += 1;
-//       updateStatusBar(breakSeconds, false);
-//       if (breakSeconds * 1000 >= breakDuration) {
-//         clearInterval(intervalTimer);
-//         if (timerState === 'break') {
-//           timerState = 'idle';
-//           const hour = new Date().getHours();
-//           const hourly = Array(24).fill(0);
-//           hourly[hour] = breakSeconds;
-//           updateDailyLog(globalContext, {
-//             breaksTaken: 1,
-//             hourlyBreaks: hourly
-//           });
-//           playSound();
-//           vscode.window.showInformationMessage("✅ Break over, time to focus!");
-//           active = false;
-//           //startTimer();
-//         }
-//       }
-//     }
-//   }, 1000);
-// }
 function startBreakTimer() {
     if (timerState === 'break')
         return;
@@ -256,85 +193,6 @@ function playSound() {
         }
     });
 }
-// function updateDailyLog(context: vscode.ExtensionContext, update: Partial<DailyLog>) {
-//   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-//   const logs: Record<string, DailyLog> = context.globalState.get('devBalanceLogs', {});
-//   const current = logs[today] || {
-//     date: today,
-//     codingSeconds: 0,
-//     breaksTaken: 0,
-//     hourlySeconds: Array(24).fill(0),
-//     hourlyBreaks: Array(24).fill(0)
-//   };
-//   const updatedHourlySeconds = current.hourlySeconds.slice();
-//   const updatedHourlyBreaks = current.hourlyBreaks.slice();
-//   if (update.hourlySeconds) {
-//     for (let i = 0; i < 24; i++) {
-//       updatedHourlySeconds[i] += update.hourlySeconds[i] || 0;
-//     }
-//   }
-//   if (update.hourlyBreaks) {
-//     for (let i = 0; i < 24; i++) {
-//       updatedHourlyBreaks[i] += update.hourlyBreaks[i] || 0;
-//     }
-//   }
-//   logs[today] = {
-//     ...current,
-//     codingSeconds: current.codingSeconds + (update.codingSeconds || 0),
-//     breaksTaken: current.breaksTaken + (update.breaksTaken || 0),
-//     hourlySeconds: updatedHourlySeconds,
-//     hourlyBreaks: updatedHourlyBreaks
-//   };
-//   context.globalState.update('devBalanceLogs', logs);
-// }
-// function updateDailyLog(context: vscode.ExtensionContext, update: Partial<DailyLog>) {
-//   const now = new Date();
-//   const today = now.toISOString().slice(0, 10); // YYYY-MM-DD
-//   const logs: Record<string, DailyLog> = context.globalState.get('devBalanceLogs', {});
-//   const current = logs[today] || {
-//     date: today,
-//     codingSeconds: 0,
-//     breaksTaken: 0,
-//     hourlySeconds: Array(24).fill(0),
-//     hourlyBreaks: Array(24).fill(0),
-//     minuteLogs: Array(60).fill(0),
-//     minuteBreaks: Array(60).fill(0),
-//   };
-//   const updatedHourlySeconds = current.hourlySeconds.slice();
-//   const updatedHourlyBreaks = current.hourlyBreaks.slice();
-//   const updatedMinuteLogs = current.minuteLogs.slice();
-//   const updatedMinuteBreaks = current.minuteBreaks.slice();
-//   const hour = now.getHours();
-//   const minute = now.getMinutes();
-//   // بروزرسانی داده‌های ساعتی
-//   if (update.hourlySeconds) {
-//     for (let i = 0; i < 24; i++) {
-//       updatedHourlySeconds[i] += update.hourlySeconds[i] || 0;
-//     }
-//   }
-//   if (update.hourlyBreaks) {
-//     for (let i = 0; i < 24; i++) {
-//       updatedHourlyBreaks[i] += update.hourlyBreaks[i] || 0;
-//     }
-//   }
-//   // بروزرسانی دقیقه‌ای فقط برای دقیقه فعلی
-//   if (update.codingSeconds) {
-//     updatedMinuteLogs[minute] += update.codingSeconds;
-//   }
-//   if (update.breaksTaken) {
-//     updatedMinuteBreaks[minute] += update.breaksTaken;
-//   }
-//   logs[today] = {
-//     ...current,
-//     codingSeconds: current.codingSeconds + (update.codingSeconds || 0),
-//     breaksTaken: current.breaksTaken + (update.breaksTaken || 0),
-//     hourlySeconds: updatedHourlySeconds,
-//     hourlyBreaks: updatedHourlyBreaks,
-//     minuteLogs: updatedMinuteLogs,
-//     minuteBreaks: updatedMinuteBreaks
-//   };
-//   context.globalState.update('devBalanceLogs', logs);
-// }
 function updateDailyLog(context, update) {
     const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     const logs = context.globalState.get('devBalanceLogs', {});
@@ -382,18 +240,6 @@ function updateDailyLog(context, update) {
     };
     context.globalState.update('devBalanceLogs', logs);
 }
-// function showDailyReport() {
-//   const today = new Date().toISOString().slice(0, 10);
-//   const logs: Record<string, DailyLog> = globalContext.globalState.get('devBalanceLogs', {});
-//   const todayLog = logs[today];
-//   if (!todayLog) {
-//     vscode.window.showInformationMessage("❌ No activity logged for today.");
-//     return;
-//   }
-//   const minutes = Math.floor(todayLog.codingSeconds / 60);
-//   const breaks = todayLog.breaksTaken;
-//   vscode.window.showInformationMessage(`📅 Today:\n🧑‍💻 Coding Time: ${minutes} min\n☕ Breaks Taken: ${breaks}`);
-// }
 function showDailyReport() {
     var _a;
     const today = new Date().toISOString().slice(0, 10);
@@ -404,41 +250,11 @@ function showDailyReport() {
         return;
     }
     const minutes = Math.floor(todayLog.codingSeconds / 60);
-    //const breaks = todayLog.breaksTaken;
+    const totalBreaks = todayLog.breaksTaken || 0;
     const breakSeconds = ((_a = todayLog.minuteBreaks) === null || _a === void 0 ? void 0 : _a.reduce((a, b) => a + b, 0)) || 0;
     const breakMinutes = Math.floor(breakSeconds / 60);
-    vscode.window.showInformationMessage(`📅 Today:\n🧑‍💻 Coding Time: ${minutes} min\n☕ Break Time: ${breakMinutes} min`);
+    vscode.window.showInformationMessage(`📅 Today:\n🧑‍💻 Coding Time: ${minutes} min\n☕ Break Time: ${breakMinutes} min (${totalBreaks} breaks)`);
 }
-// function showMonthlyReport() {
-//   const logs: Record<string, DailyLog> = globalContext.globalState.get('devBalanceLogs', {});
-//   const now = new Date();
-//   const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
-//   let totalCodingSeconds = 0;
-//   let totalBreaks = 0;
-//   for (const date in logs) {
-//     if (date.startsWith(currentMonth)) {
-//       totalCodingSeconds += logs[date].codingSeconds;
-//       totalBreaks += logs[date].breaksTaken;
-//     }
-//   }
-//   const minutes = Math.floor(totalCodingSeconds / 60);
-//   vscode.window.showInformationMessage(`🗓️ This Month:\n🧑‍💻 Coding Time: ${minutes} min\n☕ Breaks Taken: ${totalBreaks}`);
-// }
-// function showYearlyReport() {
-//   const logs: Record<string, DailyLog> = globalContext.globalState.get('devBalanceLogs', {});
-//   const now = new Date();
-//   const currentYear = now.toISOString().slice(0, 4); // YYYY
-//   let totalCodingSeconds = 0;
-//   let totalBreaks = 0;
-//   for (const date in logs) {
-//     if (date.startsWith(currentYear)) {
-//       totalCodingSeconds += logs[date].codingSeconds;
-//       totalBreaks += logs[date].breaksTaken;
-//     }
-//   }
-//   const minutes = Math.floor(totalCodingSeconds / 60);
-//   vscode.window.showInformationMessage(`📆 This Year:\n🧑‍💻 Coding Time: ${minutes} min\n☕ Breaks Taken: ${totalBreaks}`);
-// }
 function showMonthlyReport() {
     var _a;
     const logs = globalContext.globalState.get('devBalanceLogs', {});
@@ -493,65 +309,6 @@ async function selectReport() {
         showChartReport('yearly');
     }
 }
-// function showChartReport(mode: 'daily' | 'monthly' | 'yearly') {
-//   const panel = vscode.window.createWebviewPanel(
-//     'devBalanceReport',
-//     `DevBalance - ${mode[0].toUpperCase() + mode.slice(1)} Report`,
-//     vscode.ViewColumn.One,
-//     { enableScripts: true }
-//   );
-//   const logs: Record<string, DailyLog> = globalContext.globalState.get('devBalanceLogs', {});
-//   const now = new Date();
-//   const labels: string[] = [];
-//   const coding: number[] = [];
-//   const breaks: number[] = [];
-//   if (mode === 'daily') {
-//     const today = now.toISOString().slice(0, 10);
-//     const log = logs[today];
-//     for (let i = 0; i < 60; i++) {
-//       labels.push(i.toString().padStart(2, '0')); // '00', '01', ..., '59'
-//       coding.push(log?.minuteLogs ? Math.floor((log.minuteLogs[i] || 0) / 60) : 0);
-//       //breaks.push(log?.minuteBreaks ? (log.minuteBreaks[i] || 0) : 0);
-//       breaks.push(log?.minuteBreaks ? Math.floor((log.minuteBreaks[i] || 0) / 60) : 0);
-//     }
-//   }
-//   if (mode === 'monthly') {
-//     const yearMonth = now.toISOString().slice(0, 7);
-//     const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-//     for (let i = 1; i <= daysInMonth; i++) {
-//       const dayStr = i.toString().padStart(2, '0');
-//       const fullDate = `${yearMonth}-${dayStr}`;
-//       labels.push(dayStr);
-//       const log = logs[fullDate];
-//       coding.push(log ? Math.floor(log.codingSeconds / 60) : 0);
-//       //breaks.push(log?.breaksTaken || 0);
-//       const breakSeconds = log?.minuteBreaks?.reduce((a, b) => a + b, 0) || 0;
-//       breaks.push(Math.floor(breakSeconds / 60));
-//     }
-//   }
-//   if (mode === 'yearly') {
-//     const year = now.getFullYear().toString();
-//     const monthlyCoding = new Array(12).fill(0);
-//     const monthlyBreaks = new Array(12).fill(0);
-//     for (const date in logs) {
-//       if (date.startsWith(year)) {
-//         const log = logs[date];
-//         const month = parseInt(date.split('-')[1], 10) - 1;
-//         monthlyCoding[month] += log.codingSeconds;
-//         //monthlyBreaks[month] += log.breaksTaken;
-//         const breakSeconds = log.minuteBreaks?.reduce((a, b) => a + b, 0) || 0;
-//         monthlyBreaks[month] += breakSeconds;
-//       }
-//     }
-//     for (let i = 0; i < 12; i++) {
-//       labels.push(new Date(2000, i).toLocaleString('default', { month: 'short' }));
-//       coding.push(Math.floor(monthlyCoding[i] / 60));
-//       //breaks.push(monthlyBreaks[i]);
-//       breaks.push(Math.floor(monthlyBreaks[i] / 60));
-//     }
-//   }
-//   panel.webview.html = getChartHtml(labels, coding, breaks, mode);
-// }
 function showChartReport(mode) {
     var _a, _b, _c, _d, _e;
     const panel = vscode.window.createWebviewPanel('devBalanceReport', `DevBalance - ${mode[0].toUpperCase() + mode.slice(1)} Report`, vscode.ViewColumn.One, { enableScripts: true });
@@ -560,17 +317,6 @@ function showChartReport(mode) {
     const labels = [];
     const coding = [];
     const breaks = [];
-    // if (mode === 'daily') {
-    //   // محور افقی: ساعت‌های شبانه‌روز
-    //   // محور عمودی: دقیقه‌های فعالیت در هر ساعت (۰ تا ۶۰)
-    //   const today = now.toISOString().slice(0, 10);
-    //   const log = logs[today];
-    //   for (let i = 0; i < 24; i++) {
-    //     labels.push(i.toString().padStart(2, '0'));
-    //     coding.push(Math.floor((log?.hourlySeconds?.[i] || 0) / 60));
-    //     breaks.push(Math.floor((log?.hourlyBreaks?.[i] || 0) / 60));
-    //   }
-    // }
     if (mode === 'daily') {
         const today = now.toISOString().slice(0, 10);
         const log = logs[today] || { hourlySeconds: [], hourlyBreaks: [] };
@@ -597,29 +343,6 @@ function showChartReport(mode) {
             breaks.push(parseFloat(breakHours.toFixed(2)));
         }
     }
-    // if (mode === 'yearly') {
-    //   const year = now.getFullYear().toString();
-    //   const monthlyCodingDays = new Array(12).fill(0);
-    //   const monthlyBreakDays = new Array(12).fill(0);
-    //   for (const date in logs) {
-    //     if (date.startsWith(year)) {
-    //       const log = logs[date];
-    //       const month = parseInt(date.split('-')[1], 10) - 1;
-    //       if (log.codingSeconds > 0) {
-    //         monthlyCodingDays[month] += 1;
-    //       }
-    //       const totalBreaks = log.minuteBreaks?.reduce((a, b) => a + b, 0) || 0;
-    //       if (totalBreaks > 0) {
-    //         monthlyBreakDays[month] += 1;
-    //       }
-    //     }
-    //   }
-    //   for (let i = 0; i < 12; i++) {
-    //     labels.push(new Date(2000, i).toLocaleString('default', { month: 'short' }));
-    //     coding.push(monthlyCodingDays[i]);
-    //     breaks.push(monthlyBreakDays[i]);
-    //   }
-    // }
     if (mode === 'yearly') {
         const year = now.getFullYear().toString();
         const monthlyCodingSeconds = new Array(12).fill(0);
@@ -644,231 +367,6 @@ function showChartReport(mode) {
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-// function getChartHtml(labels: string[], codingData: number[], breaksData: number[], mode: string): string {
-//   return `
-//     <!DOCTYPE html>
-//     <html lang="en">
-//     <head>
-//       <meta charset="UTF-8" />
-//       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-//       <title>${mode} Report</title>
-//       <style>
-//         body {
-//           background-color: #1e1e1e;
-//           color: #e0e0e0;
-//           font-family: "Segoe UI", sans-serif;
-//           margin: 0;
-//           padding: 20px;
-//         }
-//         h2 {
-//           font-size: 18px;
-//           margin-bottom: 16px;
-//         }
-//         canvas {
-//           max-height: 400px;
-//           background-color: #121212;
-//           border-radius: 8px;
-//           padding: 12px;
-//         }
-//       </style>
-//     </head>
-//     <body>
-//       <h2>${capitalize(mode)} Report</h2>
-//       <canvas id="devChart"></canvas>
-//       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-//       <script>
-//         const ctx = document.getElementById('devChart').getContext('2d');
-//         new Chart(ctx, {
-//           type: 'bar',
-//           data: {
-//             labels: ${JSON.stringify(labels)},
-//             datasets: [
-//               {
-//                 label: 'Coding (min)',
-//                 data: ${JSON.stringify(codingData)},
-//                 backgroundColor: 'rgba(0, 172, 238, 0.7)',
-//                 borderRadius: 4,
-//                 barThickness: 12
-//               },
-//               {
-//                 label: 'Breaks',
-//                 data: ${JSON.stringify(breaksData)},
-//                 backgroundColor: 'rgba(0, 200, 130, 0.6)',
-//                 borderRadius: 4,
-//                 barThickness: 12
-//               }
-//             ]
-//           },
-//           options: {
-//             responsive: true,
-//             maintainAspectRatio: false,
-//             plugins: {
-//               legend: {
-//                 labels: {
-//                   color: '#ccc',
-//                   font: { size: 12 }
-//                 }
-//               },
-//               tooltip: {
-//                 backgroundColor: '#333',
-//                 titleColor: '#fff',
-//                 bodyColor: '#eee',
-//                 borderWidth: 1,
-//                 borderColor: '#888'
-//               }
-//             },
-//             scales: {
-//               x: {
-//                 ticks: {
-//                   color: '#aaa',
-//                   font: { size: 10 }
-//                 },
-//                 grid: {
-//                   display: false
-//                 }
-//               },
-//               y: {
-//                 ticks: {
-//                   color: '#aaa',
-//                   font: { size: 10 }
-//                 },
-//                 grid: {
-//                   color: '#333'
-//                 },
-//                 title: {
-//                   display: true,
-//                   text: 'Minutes',
-//                   color: '#ccc',
-//                   font: { size: 12 }
-//                 }
-//               }
-//             }
-//           }
-//         });
-//         function capitalize(s) {
-//           return s.charAt(0).toUpperCase() + s.slice(1);
-//         }
-//       </script>
-//     </body>
-//     </html>
-//   `;
-// }
-// function getChartHtml(labels: string[], codingData: number[], breaksData: number[], mode: string): string {
-//   return `
-//     <!DOCTYPE html>
-//     <html lang="en">
-//     <head>
-//       <meta charset="UTF-8" />
-//       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-//       <title>${mode} Report</title>
-//       <style>
-//         body {
-//           background-color: #1e1e1e;
-//           color: #e0e0e0;
-//           font-family: "Segoe UI", sans-serif;
-//           margin: 0;
-//           padding: 20px;
-//         }
-//         h2 {
-//           font-size: 18px;
-//           margin-bottom: 16px;
-//         }
-//         canvas {
-//           max-height: 400px;
-//           background-color: #121212;
-//           border-radius: 8px;
-//           padding: 12px;
-//         }
-//       </style>
-//     </head>
-//     <body>
-//       <h2>${capitalize(mode)} Report</h2>
-//       <canvas id="devChart"></canvas>
-//       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-//       <script>
-//         const mode = "${mode}";
-//         const yLabelMap = {
-//           daily: "Minutes",
-//           monthly: "Hours",
-//           yearly: "Days"
-//         };
-//         const ctx = document.getElementById('devChart').getContext('2d');
-//         new Chart(ctx, {
-//           type: 'bar',
-//           data: {
-//             labels: ${JSON.stringify(labels)},
-//             datasets: [
-//               {
-//                 label: 'Coding',
-//                 data: ${JSON.stringify(codingData)},
-//                 backgroundColor: 'rgba(0, 172, 238, 0.7)',
-//                 borderRadius: 4,
-//                 barThickness: 12
-//               },
-//               {
-//                 label: 'Breaks',
-//                 data: ${JSON.stringify(breaksData)},
-//                 backgroundColor: 'rgba(0, 200, 130, 0.6)',
-//                 borderRadius: 4,
-//                 barThickness: 12
-//               }
-//             ]
-//           },
-//           options: {
-//             responsive: true,
-//             maintainAspectRatio: false,
-//             plugins: {
-//               legend: {
-//                 labels: {
-//                   color: '#ccc',
-//                   font: { size: 12 }
-//                 }
-//               },
-//               tooltip: {
-//                 backgroundColor: '#333',
-//                 titleColor: '#fff',
-//                 bodyColor: '#eee',
-//                 borderWidth: 1,
-//                 borderColor: '#888'
-//               }
-//             },
-//             scales: {
-//               x: {
-//                 ticks: {
-//                   color: '#aaa',
-//                   font: { size: 10 }
-//                 },
-//                 grid: {
-//                   display: false
-//                 }
-//               },
-//               y: {
-//                 beginAtZero: true,
-//                 ticks: {
-//                   color: '#aaa',
-//                   font: { size: 10 }
-//                 },
-//                 grid: {
-//                   color: '#333'
-//                 },
-//                 title: {
-//                   display: true,
-//                   text: yLabelMap[mode] || 'Value',
-//                   color: '#ccc',
-//                   font: { size: 12 }
-//                 }
-//               }
-//             }
-//           }
-//         });
-//         function capitalize(s) {
-//           return s.charAt(0).toUpperCase() + s.slice(1);
-//         }
-//       </script>
-//     </body>
-//     </html>
-//   `;
-// }
 function getChartHtml(labels, codingData, breaksData, mode) {
     return `
     <!DOCTYPE html>
@@ -910,7 +408,7 @@ function getChartHtml(labels, codingData, breaksData, mode) {
         let unit = "";
 
         if (mode === "daily") {
-          // ورودی دقیقه است
+
           yLabel = "Minutes";
           unit = "min";
         } else if (mode === "monthly") {
@@ -925,23 +423,23 @@ function getChartHtml(labels, codingData, breaksData, mode) {
             unit = "hr";
           }
         } else if (mode === "yearly") {
-          // ورودی هنوز ثانیه است → باید تبدیل بشه به زمان مناسب
+
           const max = Math.max(...coding, ...breaks);
 
           if (max < 3600) {
-            // کمتر از ۱ ساعت → نمایش بر حسب دقیقه
+
             coding = coding.map(v => +(v / 60).toFixed(1));
             breaks = breaks.map(v => +(v / 60).toFixed(1));
             yLabel = "Minutes";
             unit = "min";
           } else if (max < 86400) {
-            // کمتر از ۲۴ ساعت → نمایش بر حسب ساعت
+
             coding = coding.map(v => +(v / 3600).toFixed(1));
             breaks = breaks.map(v => +(v / 3600).toFixed(1));
             yLabel = "Hours";
             unit = "hr";
           } else {
-            // بیشتر از ۲۴ ساعت → نمایش بر حسب روز
+
             coding = coding.map(v => +(v / 86400).toFixed(1));
             breaks = breaks.map(v => +(v / 86400).toFixed(1));
             yLabel = "Days";
@@ -1033,10 +531,5 @@ function getChartHtml(labels, codingData, breaksData, mode) {
 function clearAllLogs(context) {
     context.globalState.update('devBalanceLogs', {});
     vscode.window.showInformationMessage('🧹 All DevBalance logs have been cleared.');
-}
-function getLocalDateString() {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    return now.toISOString().slice(0, 10);
 }
 //# sourceMappingURL=extension.js.map

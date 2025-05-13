@@ -10,6 +10,7 @@ let active = false;
 let intervalTimer: NodeJS.Timeout;
 let workDuration = 25 * 60 * 1000; // 25 mins default
 let breakDuration = 5 * 60 * 1000; // 5 mins default
+let lastTypingTime = Date.now();
 let paused = false;
 let workSeconds = 0;
 let breakSeconds = 0;
