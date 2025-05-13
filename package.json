@@ -2,6 +2,7 @@
   "name": "dev-balance",
   "displayName": "Dev Balance",
   "description": "Reminds developers to take healthy breaks during coding sessions.",
+  "publisher": "sinaebadi",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.70.0"
@@ -78,6 +79,10 @@
     "@types/vscode": "^1.70.0",
     "tslint": "^6.1.3",
     "typescript": "^4.7.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cnaebadi/devbalance.git"
   },
   "dependencies": {
     "play-sound": "^1.1.6"
