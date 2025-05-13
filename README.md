@@ -1,13 +1,48 @@
 # Dev Balance
 
-A simple VS Code extension that helps developers maintain healthy work habits by reminding them to take breaks.
+[![VS Code Marketplace](https://vsmarketplacebadge.apphb.com/version/sinaebadi.dev-balance.svg)](https://marketplace.visualstudio.com/items?itemName=sinaebadi.dev-balance)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs/sinaebadi.dev-balance.svg)](https://marketplace.visualstudio.com/items?itemName=sinaebadi.dev-balance)
 
-## Features
+**Dev Balance** helps developers maintain healthy work habits by reminding them to take breaks during long coding sessions.  
+It follows the Pomodoro technique by default, but durations are fully customizable.
 
-- Smart timer based on actual typing activity
-- Customizable work duration
-- In-editor break notifications
+## ✨ Features
 
-## Usage
+- Start and track focused work sessions
+- Automatically reminds you to take breaks
+- Displays daily, monthly, and yearly reports
+- Customizable timers for both work and breaks
+- Optional sound notifications
+- Keeps logs of your coding and break history
 
-Start coding and let Dev Balance remind you when it’s time for a short break!
+## ⚙️ Settings
+
+You can adjust the settings in your VS Code `settings.json`:
+
+```json
+{
+  "devBalance.workDurationMinutes": 25,
+  "devBalance.breakDurationMinutes": 5,
+  "devBalance.enableSound": true
+}
+```
+
+## 📊 Commands
+Open the command palette (Ctrl+Shift+P or Cmd+Shift+P) and run:
+
+- Dev Balance: Pause Timer
+- Dev Balance: Resume Timer
+- Dev Balance: Reset Timer
+- Dev Balance: Show Daily Report
+- Dev Balance: Show Monthly Report
+- Dev Balance: Show Yearly Report
+- Dev Balance: Clear All Logs
+
+
+## 📦 Installation
+Get it from the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sinaebadi.dev-balance).
+
+## 🤝 Contributing
+
+Contributions are welcome!  
+Feel free to fork the repo, submit pull requests, or open issues to improve Dev Balance together.
