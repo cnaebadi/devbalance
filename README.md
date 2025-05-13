@@ -13,6 +13,20 @@ It follows the Pomodoro technique by default, but durations are fully customizab
 - Optional sound notifications
 - Keeps logs of your coding and break history
 
+## 🧭 Status Bar Controls
+
+<img src="assets/screenshot2.png" alt="Status Bar Controls" width="500" />
+
+
+⏱️ Track time while coding
+
+🚫 Pause or 🎮 Resume the timer
+
+♻️ Reset the current session
+
+💡 View reports (daily, monthly, yearly)
+
+
 ## ⚙️ Settings
 
 You can adjust the settings in your VS Code `settings.json`:
