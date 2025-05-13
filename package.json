@@ -1,0 +1,85 @@
+{
+  "name": "dev-balance",
+  "displayName": "Dev Balance",
+  "description": "Reminds developers to take healthy breaks during coding sessions.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "devBalance.workDurationMinutes": {
+          "type": "number",
+          "default": 30,
+          "description": "Work session duration before break reminder (in minutes)"
+        },
+        "devBalance.breakDurationMinutes": {
+          "type": "number",
+          "default": 5,
+          "description": "Break duration in minutes before work resumes."
+        },
+        "devBalance.enableSound": {
+          "type": "boolean",
+          "default": true,
+          "description": "Play a sound when break or work notifications are shown."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "devBalance.pauseTimer",
+        "title": "Dev Balance: Pause Timer"
+      },
+      {
+        "command": "devBalance.resumeTimer",
+        "title": "Dev Balance: Resume Timer"
+      },
+      {
+        "command": "devBalance.resetTimer",
+        "title": "Dev Balance: Reset Timer"
+      },
+      {
+        "command": "devBalance.showDailyReport",
+        "title": "Show Daily Report"
+      },
+      {
+        "command": "devBalance.showMonthlyReport",
+        "title": "Dev Balance: Show Monthly Report"
+      },
+      {
+        "command": "devBalance.showYearlyReport",
+        "title": "Dev Balance: Show Yearly Report"
+      },
+      {
+        "command": "devBalance.selectReport",
+        "title": "Dev Balance: Select Report"
+      },
+      {
+        "command": "devBalance.clearLogs",
+        "title": "Dev Balance: Clear All Logs"
+      },
+      {
+        "command": "devBalance.showLogs",
+        "title": "DevBalance: Show Logs"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.12",
+    "@types/vscode": "^1.70.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "play-sound": "^1.1.6"
+  }
+}
