@@ -236,7 +236,7 @@ function playSound() {
   const soundEnabled = config.get<boolean>('enableSound', true);
   if (!soundEnabled) return;
 
-  const soundPath = path.join(__dirname, 'media', 'notify.wav');
+  const soundPath = path.join(__dirname, '..', 'assets', 'notify.wav');
   player.play(soundPath, (err: any) => {
     if (err) {
       console.error("Failed to play sound:", err);

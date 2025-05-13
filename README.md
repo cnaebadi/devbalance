@@ -1,7 +1,5 @@
 # Dev Balance
-
-[![VS Code Marketplace](https://vsmarketplacebadge.apphb.com/version/sinaebadi.dev-balance.svg)](https://marketplace.visualstudio.com/items?itemName=sinaebadi.dev-balance)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/sinaebadi.dev-balance.svg)](https://marketplace.visualstudio.com/items?itemName=sinaebadi.dev-balance)
+![Screenshot](assets/screenshot.png)
 
 **Dev Balance** helps developers maintain healthy work habits by reminding them to take breaks during long coding sessions.  
 It follows the Pomodoro technique by default, but durations are fully customizable.
