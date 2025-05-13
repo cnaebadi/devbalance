@@ -3,7 +3,7 @@
   "displayName": "Dev Balance",
   "description": "Reminds developers to take healthy breaks during coding sessions.",
   "publisher": "sinaebadi",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.70.0"
   },
