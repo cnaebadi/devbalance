@@ -54,6 +54,18 @@ Open the command palette (Ctrl+Shift+P or Cmd+Shift+P) and run:
 ## 📦 Installation
 Get it from the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sinaebadi.dev-balance).
 
+
+You can use `devBalance` even on [Cursor](https://www.cursor.sh/) — the AI-first editor based on VS Code.
+
+### 🔧 How to install:
+Just open Cursor/VSCode, go to the Extensions panel, and search:
+#### dev balance
+Or run the command:
+```bash
+ext install sinaebadi.devbalance
+```
+
+
 ## 🤝 Contributing
 
 Contributions are welcome!  
